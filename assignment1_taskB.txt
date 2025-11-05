@@ -1,0 +1,5 @@
+Remote name: ca25_remote
+Remote repo: https://github.com/tiziano1590/comp_astro_25
+Remote branch: main
+Last remote commit hash: 6394e01e1fb7517c55b85aa7d1f8c6f28db95440
+Last remote commit date: 2025-10-09T19:48:21+02:00
