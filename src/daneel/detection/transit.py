@@ -1,10 +1,39 @@
-# --- BATMAN tutorial-style transit script for Kepler-297 c ---
-# Steps (as in the tutorial flow):
-# 1) Define TransitParams
-# 2) Create a time array around mid-transit
-# 3) Build TransitModel(params, t)
-# 4) Compute light curve with m.light_curve(params)
-# 5) Plot and save PNG
+# add near the top of transit.py (you can keep your existing make_transit_plot)
+import yaml  # pip install pyyaml
+
+def _params_from_yaml(yaml_path):
+    with open(yaml_path, "r") as f:
+        y = yaml.safe_load(f)
+    per = float(y.get("per", 74.92768653))
+    inc = float(y.get("inc", 89.47))
+    ecc = float(y.get("ecc", 0.0))
+    w   = float(y.get("w", 90.0))
+    a_over_rstar  = float(y.get("a_over_rstar", 0.3292 * 215.032))
+    rp_over_rstar = float(y.get("rp_over_rstar", 0.57 * 0.10045))
+    limb = y.get("limb_dark", "quadratic")
+    u    = y.get("u", [0.3, 0.2])
+    t0   = float(y.get("t0", 0.0))
+    window = float(y.get("t_window_days", 0.5))
+    out_png = y.get("out_png", "transit_assignment1.png")
+    return dict(per=per, inc=inc, ecc=ecc, w=w,
+                a_over_rstar=a_over_rstar, rp_over_rstar=rp_over_rstar,
+                limb_dark=limb, u=u, t_center=t0,
+                t_window_days=window, out_png=out_png)
+
+def transit(params_yaml=None, out_png=None):
+    """
+    Assignment API: daneel.transit(params_yaml=..., out_png=...)
+    Loads YAML if provided, then calls make_transit_plot(...)
+    """
+    kwargs = {}
+    if params_yaml:
+        kwargs = _params_from_yaml(params_yaml)
+        if out_png:
+            kwargs["out_png"] = out_png
+    elif out_png:
+        kwargs["out_png"] = out_png
+    return make_transit_plot(**kwargs)
+
 
 import matplotlib
 matplotlib.use("Agg")  # headless-safe backend

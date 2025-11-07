@@ -1,25 +1,29 @@
-import os
+# src/daneel/parameters/parameters.py
 import yaml
-import numpy as np
-
+from pathlib import Path
+from typing import Any, Dict
 
 class Parameters:
     """
-    The parameters class, crucial to read configuration files and run a complex code
+    Minimal, robust parameters loader.
 
-    Keyword arguments:
-    input file -- path to the .yaml configuration file where daneel will extract all the important parameters
-    Return: a Python dictionary with all the parameters contained in the input file
+    Usage:
+        p = Parameters("params.yaml")
+        p.params  # dict with your YAML keys/values
     """
+    def __init__(self, path: str):
+        self.path = Path(path)
+        if not self.path.exists():
+            raise FileNotFoundError(f"Parameters file not found: {self.path}")
 
-    def __init__(self, input_file):
-        if os.path.exists(input_file) and os.path.isfile(input_file):
-            with open(input_file) as in_f:
-                self.params = yaml.load(in_f, Loader=yaml.FullLoader)
+        with self.path.open("r") as f:
+            data = yaml.safe_load(f)  # may return None for empty files
 
-        for par in list(self.params.keys()):
-            if self.params[par] == "None":
-                self.params[par] = None
+        # Always set self.params first, before any access.
+        self.params: Dict[str, Any] = data or {}
 
-    def get(self, param):
-        return self.params[param]
+        # (Optional) place for validation of required keys, e.g.:
+        # for required in ["per", "inc"]:
+        #     if required not in self.params:
+        #         raise ValueError(f"Missing required key: {required}")
+
