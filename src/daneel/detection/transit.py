@@ -88,12 +88,72 @@ class TransitModel:
 
 
 def kepler_297c_params():
+    """
+    Parameters for Kepler-297 c, based on exoplanet.eu values.
+    This is what you used for Task F.
+    """
+    # Given values from the exoplanet catalogue
+    P_days = 74.92768653
+    a_AU = 0.3292
+    Rp_Rj = 0.57
+    R_star_Rsun = 0.89
+
+    # Conversion factors
+    RJ_OVER_RSUN = 0.10045   # 1 R_J in units of R_sun
+    AU_OVER_RSUN = 215.032   # 1 AU in units of R_sun
+
+    # Dimensionless ratios needed by batman
+    rp_over_rstar = Rp_Rj * RJ_OVER_RSUN / R_star_Rsun
+    a_over_rstar = a_AU * AU_OVER_RSUN / R_star_Rsun
+
+    params_dict = {
+        "t0": 0.0,
+        "per": P_days,
+        "rp": rp_over_rstar,
+        "a": a_over_rstar,
+        "inc": 89.47,
+        "ecc": 0.0,
+        "w": 90.0,
+        "u": [0.3, 0.2],
+        "limb_dark": "quadratic",
+    }
+
     return params_dict
 
 
 def transit_from_yaml(yaml_path, output_file="transit_cli.png"):
+    """
+    Run the transit model using parameters loaded from a YAML file.
+
+    This is the function that will be called by the CLI (Task G).
+    """
+    with open(yaml_path, "r") as f:
+        config = yaml.safe_load(f)
+
+    # If YAML has a 'transit' block, use it, otherwise use the whole file
+    if "transit" in config:
+        params_dict = config["transit"]
+    else:
+        params_dict = config
+
     model = TransitModel(params_dict)
     model.run(output_file=output_file)
+def transit(params_yaml=None, out_png=None):
+    """
+    Function required by the CLI for Task G/H.
+    This is what Daneel calls when you run:
+        daneel -i params.yaml -t
+    """
+    if params_yaml is None:
+        # Default: use your Task F planet Kepler-297c
+        params = kepler_297c_params()
+        output_file = out_png or "Kepler-297c_assignment1_taskF.png"
+        model = TransitModel(params)
+        model.run(output_file=output_file)
+    else:
+        # Use parameters from YAML file (Task G/H)
+        output_file = out_png or "lc.png"
+        transit_from_yaml(params_yaml, output_file=output_file)
 
 
 if __name__ == "__main__":

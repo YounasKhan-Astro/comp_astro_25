@@ -1,7 +1,7 @@
 import datetime
 import argparse
 from daneel.parameters import Parameters
-from daneel.detection import *
+from daneel.detection.transit import transit as transit_cli
 
 
 def main():
@@ -13,53 +13,58 @@ def main():
         dest="input_file",
         type=str,
         required=True,
-        help="Input par file to pass",
+        help="Input parameter file",
     )
 
     parser.add_argument(
         "-t",
         "--transit",
         dest="transit",
-        required=False,
-        help="Plots transit lightcurve from yaml file",
         action="store_true",
+        help="Plots transit lightcurve from YAML file",
     )
 
     parser.add_argument(
         "-d",
         "--detect",
         dest="detect",
-        required=False,
-        help="Initialise detection algorithms for Exoplanets",
         action="store_true",
+        help="Initialise detection algorithms for exoplanets",
     )
-    
 
     parser.add_argument(
         "-a",
         "--atmosphere",
-        dest="complete",
-        required=False,
-        help="Atmospheric Characterisazion from input transmission spectrum",
+        dest="atmosphere",
         action="store_true",
+        help="Atmospheric characterisation",
     )
 
+    # This must be inside main()
     args = parser.parse_args()
 
-    """Launch Daneel"""
+    # Start log
     start = datetime.datetime.now()
     print(f"Daneel starts at {start}")
 
-    input_pars = Parameters(args.input_file).params
-
+    # ===========================
+    # Transit mode (Task G + H)
+    # ===========================
     if args.transit:
-        transit = TransitModel(input_pars['transit'])
-        transit.plot_light_curve()
-    elif args.detect:
-        pass
-    elif args.atmosphere:
-        pass
+        transit_cli(params_yaml=args.input_file)
 
+    # ===========================
+    # Other modes (unused now)
+    # ===========================
+    elif args.detect or args.atmosphere:
+        input_pars = Parameters(args.input_file).params
+
+        if args.detect:
+            pass
+        elif args.atmosphere:
+            pass
+
+    # End log
     finish = datetime.datetime.now()
     print(f"Daneel finishes at {finish}")
 
