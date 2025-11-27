@@ -64,3 +64,43 @@ This project is licensed under the MIT License.
 ## Author
 
 Tiziano Zingales (tiziano.zingales@unipd.it)
+
+## Transit Light Curve (Task F & G)
+
+ Daneel can compute and plot a planetary transit light curve using the `-t` / `--transit` flag.
+ The transit parameters must be provided inside the input YAML file under the key `transit:`.
+
+## Example `params.yaml` snippet
+
+```yaml
+transit:
+  t0: 0.0
+  per: 74.92768653
+  rp: 0.0643
+  a: 79.51
+  inc: 89.47
+  ecc: 0.0
+  w: 90.0
+  u: [0.3, 0.2]
+  limb_dark: quadratic
+  ```
+## Run the transit model
+
+To generate the light curve directly from the command line:
+ ```bash
+ daneel -i examples/params.yaml -t
+ ```
+ This command:
+
+loads the transit parameters from the YAML file
+
+builds the transit model using the batman package
+
+plots the transit light curve
+
+saves the output figure to lc.png
+## Output
+
+Running the command will produce a PNG file containing the transit light curve:
+```lc.png
+```
