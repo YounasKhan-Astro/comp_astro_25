@@ -1,7 +1,7 @@
 import numpy as np
 import batman
 import matplotlib.pyplot as plt
-
+import yaml 
 
 class TransitModel:
     """
@@ -88,45 +88,12 @@ class TransitModel:
 
 
 def kepler_297c_params():
-    """
-    Parameters for Kepler-297 c, based on exoplanet.eu values.
-
-    Website values (approx):
-        Period P          = 74.92768653 days
-        Semi-major axis a = 0.3292 AU
-        Planet radius     = 0.57 R_J
-        Stellar radius    = 0.89 R_sun
-        Inclination       = 89.47 deg
-        Eccentricity      = 0.0
-    We convert a and Rp into units of stellar radii (a/R*, Rp/R*).
-    """
-    # Given values from the exoplanet catalogue
-    P_days = 74.92768653
-    a_AU = 0.3292
-    Rp_Rj = 0.57
-    R_star_Rsun = 0.89
-
-    # Conversion factors
-    RJ_OVER_RSUN = 0.10045   # 1 R_J in units of R_sun
-    AU_OVER_RSUN = 215.032   # 1 AU in units of R_sun
-
-    # Dimensionless ratios needed by batman
-    rp_over_rstar = Rp_Rj * RJ_OVER_RSUN / R_star_Rsun
-    a_over_rstar = a_AU * AU_OVER_RSUN / R_star_Rsun
-
-    params_dict = {
-        "t0": 0.0,                     # choose reference mid-transit time
-        "per": P_days,                 # orbital period [days]
-        "rp": rp_over_rstar,           # Rp/R*
-        "a": a_over_rstar,             # a/R*
-        "inc": 89.47,                  # inclination [deg]
-        "ecc": 0.0,                    # eccentricity
-        "w": 90.0,                     # argument of periastron [deg]
-        "u": [0.3, 0.2],               # limb darkening coefficients
-        "limb_dark": "quadratic",      # limb darkening law
-    }
-
     return params_dict
+
+
+def transit_from_yaml(yaml_path, output_file="transit_cli.png"):
+    model = TransitModel(params_dict)
+    model.run(output_file=output_file)
 
 
 if __name__ == "__main__":
