@@ -73,7 +73,7 @@ class TransitModel:
         plt.plot(self.t, self.flux)
         plt.xlabel("Time from central transit (days)")
         plt.ylabel("Relative flux")
-        plt.title("Transit light curve for Kepler-297 c")
+        plt.title("Transit light curve for Kepler-297c")
         plt.tight_layout()
         plt.savefig(output_file)
         plt.show()
@@ -114,7 +114,7 @@ def kepler_297c_params():
         "inc": 89.47,
         "ecc": 0.0,
         "w": 90.0,
-        "u": [0.3, 0.2],
+        "u":   [0.357, 0.225],
         "limb_dark": "quadratic",
     }
 
@@ -147,13 +147,52 @@ def transit(params_yaml=None, out_png=None):
     if params_yaml is None:
         # Default: use your Task F planet Kepler-297c
         params = kepler_297c_params()
-        output_file = out_png or "assignment2_taskA.png"
+        output_file = out_png or "Kepler-297c_assignment1_taskF.png"
         model = TransitModel(params)
         model.run(output_file=output_file)
     else:
         # Use parameters from YAML file (Task G/H)
         output_file = out_png or "lc.png"
         transit_from_yaml(params_yaml, output_file=output_file)
+def two_planet_transits_taskB():
+    """
+    Assignment 2 – Task B:
+    Plot two transiting planets around the same star.
+    Planet 1: original Kepler-297 c
+    Planet 2: same orbit but radius reduced by a factor 1/2.
+    The figure is saved as 'assignment2_taskB.png'.
+    """
+    # Base planet = your Kepler-297 c from Task A
+    params1 = kepler_297c_params()
+
+    # Second planet: identical parameters but Rp -> Rp/2
+    params2 = params1.copy()
+    params2["rp"] = params1["rp"] * 0.5  # radius scaled by 1/2
+
+    # Build models
+    model1 = TransitModel(params1)
+    model2 = TransitModel(params2)
+
+    flux1 = model1.compute_light_curve()
+    flux2 = model2.compute_light_curve()
+
+    t = model1.t  # time array (same for both)
+
+    # Plot both light curves on the same axes
+    plt.figure(figsize=(10, 6))
+    plt.plot(t, flux1, label="Planet 1: Kepler-297 c", linewidth=2)
+    plt.plot(t, flux2, label="Planet 2: Rp = 0.5 × Rp₁", linewidth=2)
+
+    plt.xlabel("Time from central transit (days)")
+    plt.ylabel("Relative flux")
+    plt.title("Transits of two planets around Kepler-297")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig("assignment2_taskB.png")
+    plt.show()
+
+    print("Figure saved to assignment2_taskB.png")
+
 
 
 if __name__ == "__main__":
