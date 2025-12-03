@@ -1,0 +1,6 @@
+=== Assignment 2 — Task E ===
+Model: Decision Tree
+Confusion Matrix:
+[[77 18]
+ [29 65]]
+Precision: 0.7831
