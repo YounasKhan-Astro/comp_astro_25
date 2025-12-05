@@ -6,55 +6,42 @@ from daneel.detection.transit import transit as transit_cli
 
 
 def main():
+
     parser = argparse.ArgumentParser()
 
-    # -----------------------------
-    # Required: input YAML file
-    # -----------------------------
+    # Required YAML parameter file
     parser.add_argument(
-        "-i",
-        "--input",
+        "-i", "--input",
         dest="input_file",
         type=str,
         required=True,
         help="Input parameter file",
     )
 
-    # -----------------------------
-    # Transit flag
-    # -----------------------------
+    # Transit mode
     parser.add_argument(
-        "-t",
-        "--transit",
+        "-t", "--transit",
         dest="transit",
         action="store_true",
         help="Plots transit lightcurve from YAML file",
     )
 
-    # -----------------------------
-    # Detection method (Task G)
-    # e.g. -d rf
-    # -----------------------------
+    # Detection mode (RF or CNN)
     parser.add_argument(
-        "-d",
-        "--detect",
+        "-d", "--detect",
         dest="detect",
-        type=str,  # <--- IMPORTANT: this takes a string (rf, cnn, ...)
-        help="Detection method: rf (Random Forest)",
+        type=str,
+        help="Detection method: rf or cnn",
     )
 
-    # -----------------------------
-    # Atmosphere (unused placeholder)
-    # -----------------------------
+    # Atmosphere (unused)
     parser.add_argument(
-        "-a",
-        "--atmosphere",
+        "-a", "--atmosphere",
         dest="atmosphere",
         action="store_true",
         help="Atmospheric characterisation",
     )
 
-    # Parse arguments
     args = parser.parse_args()
 
     # Start log
@@ -68,18 +55,27 @@ def main():
         transit_cli(params_yaml=args.input_file)
 
     # ===========================
-    # Detection mode: Random Forest (Task G)
+    # Random Forest mode
     # ===========================
     elif args.detect == "rf":
         from daneel.detection.rf_detector import run_rf_from_yaml
         run_rf_from_yaml(args.input_file)
 
     # ===========================
-    # Atmosphere mode (not used)
+    # CNN mode
+    # ===========================
+    elif args.detect == "cnn":
+        from daneel.detection.cnn_detector import run_cnn_from_yaml
+        run_cnn_from_yaml(args.input_file)
+
+    # ===========================
+    # Atmosphere mode (unused)
     # ===========================
     elif args.atmosphere:
-        input_pars = Parameters(args.input_file).params
-        print("Atmosphere mode not implemented yet.")
+        print("Atmosphere mode not implemented.")
+
+    else:
+        print("No valid mode selected. Use -t, -d rf, -d cnn, or -a.")
 
     # End log
     finish = datetime.datetime.now()

@@ -20,3 +20,15 @@ detection:
   samples_per_class: 350
   n_estimators: 500
   max_depth: null
+#task h assignment 2
+detection:
+  kernel: cnn          # or "rf" when you want RF by default (not used by CLI, but good documentation)
+  csv_path: tess_data.csv
+  n_bins: 1000
+  use_scaler: true
+  samples_per_class: 350
+
+  # CNN-specific hyperparameters (Task H)
+  epochs: 20
+  batch_size: 64
+  learning_rate: 0.001
