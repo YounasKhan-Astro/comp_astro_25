@@ -1,0 +1,31 @@
+Assignment 2 – Task F: CNN configurations on tess_data.csv
+----------------------------------------------------------
+
+Model: CNN_default
+Optimal threshold: 0.6458
+Confusion matrix (rows: true [0,1], cols: predicted [0,1]):
+[[83 12]
+ [16 78]]
+Precision (optimal threshold): 0.8667
+
+Model: CNN_config1
+Optimal threshold: 0.5168
+Confusion matrix (rows: true [0,1], cols: predicted [0,1]):
+[[74 21]
+ [ 8 86]]
+Precision (optimal threshold): 0.8037
+
+Model: CNN_config2
+Optimal threshold: 0.5374
+Confusion matrix (rows: true [0,1], cols: predicted [0,1]):
+[[74 21]
+ [14 80]]
+Precision (optimal threshold): 0.7921
+
+Model: CNN_config3
+Optimal threshold: 0.5764
+Confusion matrix (rows: true [0,1], cols: predicted [0,1]):
+[[74 21]
+ [12 82]]
+Precision (optimal threshold): 0.7961
+
